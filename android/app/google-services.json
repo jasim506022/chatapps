@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "441058280542",
+    "project_id": "ju-chat-7a2c6",
+    "storage_bucket": "ju-chat-7a2c6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:441058280542:android:79ddfb5e2cf3b5d050e0cf",
+        "android_client_info": {
+          "package_name": "com.example.chat_ju"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "441058280542-v2he3dr33gr6qvngkhjn03fgkjmfuq8f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNP2RLURJ7G6TVbvD_69PwxI3Al_QKHig"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "441058280542-v2he3dr33gr6qvngkhjn03fgkjmfuq8f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
