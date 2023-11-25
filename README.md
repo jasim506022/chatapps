@@ -1,6 +1,8 @@
 # chat_ju
 
-A new Flutter project.
+**Fully Featured Chat App Using Firebase, Provider and much more.**
+
+JU Chat app has a beautiful responsive UI. The app includes many features like User Authentication using email and gmail, Online Messaging (Textual, Images,), Status,  Video Calling, and Audio Calling. The app is somewhat similar to WhatsApp. JuChat app built with Provider State Management, Firebase for authentication, messaging, and database, Zegocloud streaming platform for video calling and Audio calling, and many amazing widgets.
 
 ## Getting Started
 
