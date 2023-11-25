@@ -11,8 +11,8 @@ import 'package:provider/provider.dart';
 import '../../service/firebaseservice.dart';
 import '../../const/const.dart';
 import '../../const/globalcolor.dart';
-import '../../helper/dialog.dart';
-import '../../service/loadingprovider.dart';
+import '../../const/method.dart';
+import '../../service/provider/loadingprovider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({
@@ -40,202 +40,246 @@ class _ProfilePageState extends State<ProfilePage> {
   String? _image;
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "Profile",
+    return WillPopScope(
+      onWillPop: () {
+        Navigator.pushNamed(context, AppRoutes.homePage);
+        return Future.value(true);
+      },
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              "Profile",
+            ),
           ),
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          backgroundColor: red,
-          onPressed: () async {
-            try {
-              final result = await InternetAddress.lookup('google.com');
-              if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-                Dialogs.showProgressBar(context);
-                await FirebaseService.updateActiveStatus(false);
-                await FirebaseService.updatePushToken();
-                await FirebaseService.auth.signOut().then((value) async {
-                  await GoogleSignIn().signOut().then((value) {});
-                }).then((value) {
-                  Navigator.pop(context);
-                  //Logout Alert Button
-                  Dialogs.flutterToast(msg: "Logout Succeffuly");
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, AppRoutes.signpage, (route) => false);
-                });
-              } else {
-                Dialogs.flutterToast(msg: "No Internet Connection");
-              }
-            } on SocketException {
-              if (mounted) {
-                Dialogs.showDialogMethod(
-                  context: context,
-                  message:
-                      "No Internect Connection. Please your Interenet Connection",
-                  title: 'No Internet Connection',
-                );
-              }
-            } catch (error) {
-              if (mounted) {
-                Dialogs.showDialogMethod(
-                  context: context,
-                  message: "Error: $error",
-                  title: 'Error Ocured',
-                );
-              }
-            }
-          },
-          label: const Text("Logout"),
-          icon: const Icon(Icons.logout),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(width: mq.width, height: mq.height * 0.03),
-              Stack(
-                children: [
-                  _image != null
-                      ? ClipRRect(
-                          borderRadius:
-                              BorderRadius.circular(mq.height * 0.116),
-                          child: Image.file(
-                            File(_image!),
-                            height: mq.height * 0.232,
-                            width: mq.height * 0.232,
-                            fit: BoxFit.fill,
-                          ),
-                        )
-                      : ClipRRect(
-                          borderRadius:
-                              BorderRadius.circular(mq.height * 0.116),
-                          child: CachedNetworkImage(
-                            height: mq.height * 0.232,
-                            width: mq.height * 0.232,
-                            fit: BoxFit.fill,
-                            imageUrl: prefs!.getString("image") ?? imageNull,
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                          ),
+          floatingActionButton: FloatingActionButton.extended(
+            backgroundColor: red,
+            onPressed: () async {
+              try {
+                final result = await InternetAddress.lookup('google.com');
+                if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text(
+                          "Logout",
+                          style: GoogleFonts.poppins(
+                              color: red,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
                         ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: MaterialButton(
-                      padding: const EdgeInsets.all(6),
-                      color: Colors.redAccent,
-                      shape: const CircleBorder(),
-                      onPressed: () {
-                        _showBottonSheet();
-                      },
-                      child: Icon(
-                        size: 25,
-                        Icons.camera_alt_outlined,
-                        color: white,
+                        content: Text(
+                          "Are you sure you want to Logout",
+                          style: GoogleFonts.poppins(
+                              color: textColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text("No")),
+                          TextButton(
+                              onPressed: () async {
+                                Methods.showProgressBar(context);
+                                await FirebaseService.updateActiveStatus(false);
+                                await FirebaseService.updatePushToken();
+                                await FirebaseService.auth
+                                    .signOut()
+                                    .then((value) async {
+                                  await GoogleSignIn()
+                                      .signOut()
+                                      .then((value) {});
+                                }).then((value) {
+                                  Navigator.pop(context);
+                                  Methods.flutterToast(
+                                      msg: "Logout Succeffuly");
+                                  Navigator.pushNamedAndRemoveUntil(context,
+                                      AppRoutes.signpage, (route) => false);
+                                });
+                              },
+                              child: Text("Yes"))
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  Methods.flutterToast(msg: "No Internet Connection");
+                }
+              } on SocketException {
+                if (mounted) {
+                  Methods.showDialogMethod(
+                    context: context,
+                    message:
+                        "No Internect Connection. Please your Interenet Connection",
+                    title: 'No Internet Connection',
+                  );
+                }
+              } catch (error) {
+                if (mounted) {
+                  Methods.showDialogMethod(
+                    context: context,
+                    message: "Error: $error",
+                    title: 'Error Ocured',
+                  );
+                }
+              }
+            },
+            label: const Text("Logout"),
+            icon: const Icon(Icons.logout),
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(width: mq.width, height: mq.height * 0.03),
+                Stack(
+                  children: [
+                    _image != null
+                        ? ClipRRect(
+                            borderRadius:
+                                BorderRadius.circular(mq.height * 0.116),
+                            child: Image.file(
+                              File(_image!),
+                              height: mq.height * 0.232,
+                              width: mq.height * 0.232,
+                              fit: BoxFit.fill,
+                            ),
+                          )
+                        : ClipRRect(
+                            borderRadius:
+                                BorderRadius.circular(mq.height * 0.116),
+                            child: CachedNetworkImage(
+                              height: mq.height * 0.232,
+                              width: mq.height * 0.232,
+                              fit: BoxFit.fill,
+                              imageUrl: prefs!.getString("image") ?? imageNull,
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                            ),
+                          ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: MaterialButton(
+                        padding: const EdgeInsets.all(6),
+                        color: Colors.redAccent,
+                        shape: const CircleBorder(),
+                        onPressed: () {
+                          _showBottonSheet();
+                        },
+                        child: Icon(
+                          size: 25,
+                          Icons.camera_alt_outlined,
+                          color: white,
+                        ),
                       ),
+                    )
+                  ],
+                ),
+                SizedBox(height: mq.height * 0.03),
+                Text(
+                  prefs!.getString("email") ?? "Bangladesh",
+                  style: const TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: mq.height * 0.03),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Form(
+                    key: _key,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: nameETC,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.emailAddress,
+                          obscureText: false,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Field Doen't be empty";
+                            }
+                            return null;
+                          },
+                          style: GoogleFonts.poppins(
+                              color: textColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500),
+                          decoration: InputDecoration(
+                              fillColor:
+                                  const Color.fromARGB(255, 234, 233, 233),
+                              filled: true,
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.circular(15))),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        TextFormField(
+                          controller: aboutETC,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.emailAddress,
+                          maxLines: null,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Field Doen't be empty";
+                            }
+                            return null;
+                          },
+                          style: GoogleFonts.poppins(
+                              color: textColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500),
+                          decoration: InputDecoration(
+                              fillColor:
+                                  const Color.fromARGB(255, 234, 233, 233),
+                              filled: true,
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.circular(15))),
+                        ),
+                      ],
                     ),
-                  )
-                ],
-              ),
-              SizedBox(height: mq.height * 0.03),
-              Text(
-                prefs!.getString("email") ?? "Bangladesh",
-                style: const TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: mq.height * 0.03),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Form(
-                  key: _key,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: nameETC,
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.emailAddress,
-                        obscureText: false,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Field Doen't be empty";
-                          }
-                          return null;
-                        },
-                        style: GoogleFonts.poppins(
-                            color: textColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500),
-                        decoration: InputDecoration(
-                            fillColor: const Color.fromARGB(255, 234, 233, 233),
-                            filled: true,
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(15))),
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      TextFormField(
-                        controller: aboutETC,
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.emailAddress,
-                        maxLines: null,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Field Doen't be empty";
-                          }
-                          return null;
-                        },
-                        style: GoogleFonts.poppins(
-                            color: textColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500),
-                        decoration: InputDecoration(
-                            fillColor: const Color.fromARGB(255, 234, 233, 233),
-                            filled: true,
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(15))),
-                      ),
-                    ],
                   ),
                 ),
-              ),
-              SizedBox(height: mq.height * 0.05),
-              Consumer<LoadingProvider>(
-                builder: (context, LoadingProvider, child) {
-                  return ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          shape: StadiumBorder(),
-                          minimumSize: Size(mq.width * .4, mq.height * .055)),
-                      onPressed: () {
-                        if (_key.currentState!.validate()) {
-                          _key.currentState!.save();
-                          LoadingProvider.setLoadingValue(loadingValue: true);
-                          FirebaseService.updateUserData(
-                            name: nameETC.text,
-                            about: aboutETC.text,
-                          ).then((value) {
-                            LoadingProvider.setLoadingValue(
-                                loadingValue: false);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("Sucessfully Update")));
-
-                            Navigator.pushNamed(context, "/homepage");
-                          });
-                        }
-                      },
-                      child: LoadingProvider.isLoading
-                          ? CircularProgressIndicator(
-                              backgroundColor: Colors.white,
-                            )
-                          : Text("Update"));
-                },
-              )
-            ],
+                SizedBox(height: mq.height * 0.05),
+                Consumer<LoadingProvider>(
+                  builder: (context, LoadingProvider, child) {
+                    return ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            shape: StadiumBorder(),
+                            minimumSize: Size(mq.width * .4, mq.height * .055)),
+                        onPressed: () {
+                          if (_key.currentState!.validate()) {
+                            _key.currentState!.save();
+                            LoadingProvider.setLoadingValue(loadingValue: true);
+                            FirebaseService.updateUserData(
+                              name: nameETC.text,
+                              about: aboutETC.text,
+                            ).then((value) {
+                              LoadingProvider.setLoadingValue(
+                                  loadingValue: false);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text("Sucessfully Update")));
+                              Navigator.pushNamed(context, AppRoutes.homePage);
+                            });
+                          }
+                        },
+                        child: LoadingProvider.isLoading
+                            ? CircularProgressIndicator(
+                                backgroundColor: white,
+                              )
+                            : Text("Update"));
+                  },
+                )
+              ],
+            ),
           ),
         ),
       ),

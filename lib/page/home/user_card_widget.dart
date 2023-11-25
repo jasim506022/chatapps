@@ -30,8 +30,8 @@ class _UserCardWidgetState extends State<UserCardWidget> {
               arguments: widget.usermodel);
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 10,
+          padding:  EdgeInsets.symmetric(
+           horizontal: mq.width * .02,
           ),
           child: Card(
             color: white,

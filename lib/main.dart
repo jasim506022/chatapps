@@ -1,4 +1,5 @@
 import 'package:chat_ju/page/auth/forgetpasswordpage.dart';
+import 'package:chat_ju/page/onboardingpage.dart';
 import 'package:chat_ju/page/profile/profilepage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -11,7 +12,7 @@ import 'const/approutes.dart';
 import 'const/const.dart';
 import 'const/globalcolor.dart';
 import 'firebase_options.dart';
-import 'helper/localnotification.dart';
+import 'service/notification/localnotification.dart';
 import 'page/auth/signpage.dart';
 import 'page/auth/signuppage.dart';
 import 'page/chat/chatspage.dart';
@@ -19,7 +20,7 @@ import 'page/home/homepage.dart';
 import 'page/splashpage.dart';
 import 'page/call/callpage.dart';
 import 'page/viewuserpage/viewuserpage.dart';
-import 'service/loadingprovider.dart';
+import 'service/provider/loadingprovider.dart';
 import 'service/searchprovider.dart';
 
 Future<void> main() async {
@@ -28,9 +29,8 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   prefs = await SharedPreferences.getInstance();
-  // LocalNotification.initialize();
-  LocalNotification.assomeinitialize();
-
+  LocalNotification.awesomeinitialize();
+  isviewed = prefs!.getInt('onBoard');
   runApp(const MyApp());
 }
 
@@ -72,6 +72,7 @@ class MyApp extends StatelessWidget {
           AppRoutes.viewUserPage: (context) => ViewUserPage(),
           AppRoutes.callViewPage: (context) => CallViewPage(),
           AppRoutes.forgetpasswordpage: (context) => ForgetPasswordPage(),
+          AppRoutes.onBoardingPage: (context) => OnBoardingPage(),
         },
       ),
     );
@@ -79,5 +80,5 @@ class MyApp extends StatelessWidget {
 }
 
 Future<void> backgroundHandle(RemoteMessage message) async {
-  LocalNotification.assomedisplay(message);
+  LocalNotification.awesomedisplay(message);
 }

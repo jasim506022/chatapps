@@ -1,13 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_ju/const/approutes.dart';
+import 'package:chat_ju/const/method.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../const/callcontroller.dart';
 import '../../const/globalcolor.dart';
 import '../../const/const.dart';
 import '../../model/userpersonmodel.dart';
-import '../../service/firebaseservice.dart';
 
 class UserCardDialogWidget extends StatelessWidget {
   const UserCardDialogWidget({
@@ -85,14 +84,16 @@ class UserCardDialogWidget extends StatelessWidget {
                     IconButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        CallController.callId = "1020";
-                        CallController.userId = FirebaseService.user.uid;
-                        CallController.audio = true;
-                        CallController.username =
-                            prefs!.getString("name") ?? "Jasim";
-                        Navigator.of(context).pushNamed(AppRoutes.callViewPage);
-                        FirebaseService.sendCallNotification(
-                            "Audio Call", user);
+                        Methods.call(
+                            context: context, user: user, isAudio: true);
+                        // CallController.callId = "1020";
+                        // CallController.userId = FirebaseService.user.uid;
+                        // CallController.audio = true;
+                        // CallController.username =
+                        //     prefs!.getString("name") ?? "Jasim";
+                        // Navigator.of(context).pushNamed(AppRoutes.callViewPage);
+                        // FirebaseService.sendCallNotification(
+                        //     "Audio Call", user);
                       },
                       icon: Icon(
                         Icons.call,
@@ -103,16 +104,18 @@ class UserCardDialogWidget extends StatelessWidget {
                     IconButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        CallController.callId = "1020";
-                        CallController.userId = FirebaseService.user.uid;
-                        CallController.username =
-                            prefs!.getString("name") ?? "Jasim";
-                        CallController.audio = false;
-                        Navigator.of(context).pushNamed(AppRoutes.callViewPage);
-                        FirebaseService.sendCallNotification(
-                          "Video Call",
-                          user,
-                        );
+                        Methods.call(
+                            context: context, user: user, isAudio: false);
+                        // CallController.callId = "1020";
+                        // CallController.userId = FirebaseService.user.uid;
+                        // CallController.username =
+                        //     prefs!.getString("name") ?? "Jasim";
+                        // CallController.audio = false;
+                        // Navigator.of(context).pushNamed(AppRoutes.callViewPage);
+                        // FirebaseService.sendCallNotification(
+                        //   "Video Call",
+                        //   user,
+                        // );
                       },
                       icon: Icon(
                         Icons.video_call,

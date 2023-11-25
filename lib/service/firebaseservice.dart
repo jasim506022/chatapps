@@ -11,8 +11,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart';
 
 import '../const/const.dart';
-import '../helper/dialog.dart';
-import '../helper/localnotification.dart';
+import '../const/method.dart';
+import 'notification/localnotification.dart';
 import '../model/messagemodel.dart';
 import '../model/userpersonmodel.dart';
 
@@ -60,7 +60,7 @@ class FirebaseService {
 
       return await auth.signInWithCredential(credential);
     } catch (e) {
-      Dialogs.showSnackBar(context, "Error: $e");
+      Methods.showSnackBar(context, "Error: $e");
       return null;
     }
   }
@@ -69,8 +69,6 @@ class FirebaseService {
   static Future<bool> userExists() async =>
       (await firestore.collection("user").doc(auth.currentUser!.uid).get())
           .exists;
-
-
 
 //push New User Data in Firebase Database for sign in with Gmail
   static Future<void> createUserbyGmail() async {
@@ -164,13 +162,13 @@ class FirebaseService {
       }
 
       // LocalNotification.display(message);
-      LocalNotification.assomedisplay(message, context);
+      LocalNotification.awesomedisplay(message, context);
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       print("Hello Bangladesh background");
       // LocalNotification.display(event);
-      LocalNotification.assomedisplay(event, context);
+      LocalNotification.awesomedisplay(event, context);
     });
   }
 
@@ -379,6 +377,18 @@ class FirebaseService {
       print('Response body: ${response.body}');
     } catch (e) {
       print("Error Firebase: " + e.toString());
+    }
+  }
+
+  //FirebaseUpddateMessageRead Status
+  static Future<void> deleteMessage(Message message) async {
+    await firestore
+        .collection("chats/${getConversationID(message.toId)}/message/")
+        .doc(message.sent)
+        .delete();
+
+    if (message.type == Type.image) {
+      await firebaseStorage.refFromURL(message.msg).delete();
     }
   }
 }

@@ -1,41 +1,17 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:chat_ju/const/approutes.dart';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-import '../const/callcontroller.dart';
-import '../const/const.dart';
-import '../model/userpersonmodel.dart';
-import '../service/firebaseservice.dart';
+import '../../const/approutes.dart';
+import '../../const/callcontroller.dart';
+import '../../const/const.dart';
+import '../../const/globalcolor.dart';
+import '../../model/userpersonmodel.dart';
+import '../firebaseservice.dart';
 
 class LocalNotification {
-  // static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  //     FlutterLocalNotificationsPlugin();
-
-  // static void initialize() {
-  //   const AndroidInitializationSettings initializationSettingsAndroid =
-  //       AndroidInitializationSettings('@mipmap/ic_launcher');
-
-  //   InitializationSettings initializationSettings =
-  //       const InitializationSettings(
-  //     android: initializationSettingsAndroid,
-  //   );
-
-  //   flutterLocalNotificationsPlugin.initialize(
-  //     initializationSettings,
-  //     onDidReceiveNotificationResponse:
-  //         (NotificationResponse notificationResponse) {
-  //       switch (notificationResponse.notificationResponseType) {
-  //         case NotificationResponseType.selectedNotification:
-  //           break;
-  //         case NotificationResponseType.selectedNotificationAction:
-  //           break;
-  //       }
-  //     },
-  //   );
-  // }
-
-  static void assomeinitialize() {
+  static void awesomeinitialize() {
     AwesomeNotifications().initialize(
         null,
         [
@@ -45,35 +21,13 @@ class LocalNotification {
               channelName: 'Basic notifications',
               channelDescription: 'Notification channel for basic tests',
               defaultColor: Color(0xFF9D50DD),
-              ledColor: Colors.white)
+              ledColor: white)
         ],
         // Channel groups are only visual and are not required
         debug: true);
   }
 
-  // static void display(RemoteMessage message) async {
-  //   try {
-  //     AndroidNotificationDetails androidNotificationDetails =
-  //         const AndroidNotificationDetails(
-  //       "chats",
-  //       "chats",
-  //       importance: Importance.high,
-  //       priority: Priority.high,
-  //     );
-  //     NotificationDetails details =
-  //         NotificationDetails(android: androidNotificationDetails);
-
-  //     await flutterLocalNotificationsPlugin.show(
-  //         50, message.notification!.title, message.notification!.body, details,
-  //         payload: message.data['data']);
-  //   } on Exception catch (e) {
-  //     if (kDebugMode) {
-  //       print(e);
-  //     }
-  //   }
-  // }
-
-  static void assomedisplay(RemoteMessage message,
+  static void awesomedisplay(RemoteMessage message,
       [BuildContext? context]) async {
     String title = message.notification!.title!;
     String body = message.notification!.body!;
@@ -90,12 +44,12 @@ class LocalNotification {
             NotificationActionButton(
                 key: "ACCEPT",
                 label: "Accept Call",
-                color: Colors.green,
+                color: green,
                 autoDismissible: true),
             NotificationActionButton(
                 key: "REJECT",
                 label: "Recject Call",
-                color: Colors.red,
+                color: red,
                 autoDismissible: true),
           ]);
       AwesomeNotifications().setListeners(

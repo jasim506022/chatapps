@@ -7,4 +7,5 @@ class AppRoutes {
   static String callViewPage = '/callpage';
   static String profilePage = '/profile';
   static String forgetpasswordpage= '/forgetpasswordpage';
+  static String onBoardingPage ='/onboardingpage';
 }

@@ -11,8 +11,8 @@ import 'package:provider/provider.dart';
 
 import '../../const/globalcolor.dart';
 import '../../const/const.dart';
-import '../../helper/dialog.dart';
-import '../../service/loadingprovider.dart';
+import '../../const/method.dart';
+import '../../service/provider/loadingprovider.dart';
 import '../../widget/textformwidget.dart';
 import '../../service/firebaseservice.dart';
 
@@ -48,7 +48,8 @@ class _SignPageState extends State<SignPage> {
               color: blueLight,
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 18, top: 15),
+              padding: EdgeInsets.only(
+                  left: mq.width * 0.04, top: mq.height * 0.018),
               child: Text(
                 "Log In",
                 style: GoogleFonts.poppins(
@@ -66,15 +67,16 @@ class _SignPageState extends State<SignPage> {
                         topLeft: Radius.circular(40),
                         topRight: Radius.circular(40))),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: mq.width * 0.036,
+                  ),
                   child: ListView(
                     children: [
                       Container(
                         height: mq.height * .35,
                         width: mq.width * 0.8,
                         margin: EdgeInsets.only(
-                            left: MediaQuery.of(context).size.width * 0.09,
-                            top: 30),
+                            left: mq.width * 0.09, top: mq.height * 0.035),
                         child: Image.asset("asset/image/loginpage.png"),
                       ),
                       SizedBox(
@@ -101,6 +103,7 @@ class _SignPageState extends State<SignPage> {
                               height: mq.height * .015,
                             ),
                             _buildTextFormField(
+                                obscureText: true,
                                 controller: _passwordController,
                                 validate: (value) {
                                   if (value == null || value.isEmpty) {
@@ -117,8 +120,9 @@ class _SignPageState extends State<SignPage> {
                       Align(
                         alignment: Alignment.topRight,
                         child: Container(
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 16, horizontal: 24),
+                          margin: EdgeInsets.symmetric(
+                              vertical: mq.height * 0.021,
+                              horizontal: mq.width * 0.053),
                           child: InkWell(
                             onTap: () {
                               Navigator.pushNamed(
@@ -203,7 +207,7 @@ class _SignPageState extends State<SignPage> {
   InkWell _buildGoogleSignInButton() {
     return InkWell(
       onTap: () {
-        Dialogs.showProgressBar(context);
+        Methods.showProgressBar(context);
         FirebaseService.signInWithGoogle(context: context).then((user) async {
           Navigator.pop(context);
           if (user != null) {
@@ -250,7 +254,8 @@ class _SignPageState extends State<SignPage> {
       {required String label,
       required TextEditingController controller,
       required String hintText,
-      required String? Function(String?) validate}) {
+      required String? Function(String?) validate,
+      bool obscureText = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -264,9 +269,11 @@ class _SignPageState extends State<SignPage> {
         ),
         SizedBox(height: mq.height * .01),
         TextFormFieldWidget(
-            emailController: controller,
-            hintText: hintText,
-            validate: validate),
+          emailController: controller,
+          hintText: hintText,
+          validate: validate,
+          obscureText: obscureText,
+        ),
       ],
     );
   }
@@ -278,7 +285,8 @@ class _SignPageState extends State<SignPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        padding: EdgeInsets.symmetric(
+            horizontal: mq.width * 0.022, vertical: mq.height * 0.018),
       ),
       onPressed: () async {
         if (_keyForm.currentState!.validate()) {
@@ -294,18 +302,18 @@ class _SignPageState extends State<SignPage> {
               });
 
               if (mounted) {
-                Dialogs.showSnackBar(
+                Methods.showSnackBar(
                   context,
                   "Login Successfully",
                 );
                 Navigator.pushReplacementNamed(context, AppRoutes.homePage);
               }
             } else {
-              Dialogs.flutterToast(msg: "No Internet Connection");
+              Methods.flutterToast(msg: "No Internet Connection");
             }
           } on SocketException {
             if (mounted) {
-              Dialogs.showDialogMethod(
+              Methods.showDialogMethod(
                 context: context,
                 message:
                     "No Internect Connection. Please your Interenet Connection",
@@ -315,7 +323,7 @@ class _SignPageState extends State<SignPage> {
           } on FirebaseAuthException catch (e) {
             if (e.code == 'user-not-found') {
               if (mounted) {
-                Dialogs.showDialogMethod(
+                Methods.showDialogMethod(
                   context: context,
                   message:
                       "This User Not found. Please Check Your Email And Password",
@@ -326,7 +334,7 @@ class _SignPageState extends State<SignPage> {
               loadingProvider.setLoadingValue(loadingValue: false);
             } else if (e.code == 'wrong-password') {
               if (mounted) {
-                Dialogs.showDialogMethod(
+                Methods.showDialogMethod(
                   context: context,
                   message: "Password Incorrect. Please Check your Password",
                   title: 'Incorrect password.',
@@ -335,7 +343,7 @@ class _SignPageState extends State<SignPage> {
               loadingProvider.setLoadingValue(loadingValue: false);
             } else {
               if (mounted) {
-                Dialogs.showDialogMethod(
+                Methods.showDialogMethod(
                   context: context,
                   message: "Error Occurred",
                   title: 'Error Occurred',
@@ -345,7 +353,7 @@ class _SignPageState extends State<SignPage> {
             }
           } catch (e) {
             if (mounted) {
-              Dialogs.showDialogMethod(
+              Methods.showDialogMethod(
                 context: context,
                 message: e.toString(),
                 title: 'Error Occurred',

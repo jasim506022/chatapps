@@ -17,8 +17,11 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     Future.delayed(const Duration(seconds: 2), () {
       bool isUserLoggedIn = FirebaseService.auth.currentUser != null;
-      String routeName =
-          isUserLoggedIn ? AppRoutes.homePage : AppRoutes.signpage;
+      String routeName = isUserLoggedIn
+          ? AppRoutes.homePage
+          : isviewed != 0
+              ? AppRoutes.onBoardingPage
+              : AppRoutes.signpage;
       Navigator.pushReplacementNamed(context, routeName);
     });
     super.initState();

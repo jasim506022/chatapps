@@ -1,9 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../const/approutes.dart';
 import '../../const/const.dart';
 import '../../const/globalcolor.dart';
-import '../../helper/dialog.dart';
+import '../../const/method.dart';
 
 class ViewUserPage extends StatefulWidget {
   const ViewUserPage({
@@ -56,7 +57,7 @@ class _ViewUserPageState extends State<ViewUserPage> {
                 SizedBox(height: mq.height * 0.015),
                 user.isOnline!
                     ? Text(
-                        Dialogs.getLastActiveTime(context, user.lastActive!),
+                        Methods.getLastActiveTime(context, user.lastActive!),
                         style: GoogleFonts.poppins(
                             color: textColor.withOpacity(.5),
                             fontWeight: FontWeight.w500,
@@ -67,12 +68,17 @@ class _ViewUserPageState extends State<ViewUserPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildIconTitle("Message", Icons.message),
-                    _buildIconTitle(
-                      "Call",
-                      Icons.call,
-                    ),
-                    _buildIconTitle("Video Call", Icons.video_call),
+                    _buildIconTitle("Message", Icons.message, () {
+                      Navigator.pushNamed(context, AppRoutes.chatPage,
+                          arguments: user);
+                    }),
+                    _buildIconTitle("Call", Icons.call, () {
+                      Methods.call(context: context, user: user, isAudio: true);
+                    }),
+                    _buildIconTitle("Video Call", Icons.video_call, () {
+                      Methods.call(
+                          context: context, user: user, isAudio: false);
+                    }),
                   ],
                 ),
                 SizedBox(
@@ -93,7 +99,7 @@ class _ViewUserPageState extends State<ViewUserPage> {
             Column(
               children: [
                 Text(
-                  "Crate At: ${Dialogs.getLastActiveTime(context, user.createdAt!)}",
+                  "Crate At: ${Methods.getLastActiveTime(context, user.createdAt!)}",
                   style: GoogleFonts.poppins(
                       color: textColor,
                       fontWeight: FontWeight.w500,
@@ -128,20 +134,25 @@ class _ViewUserPageState extends State<ViewUserPage> {
     );
   }
 
-  Column _buildIconTitle(String title, IconData icon) {
-    return Column(
-      children: [
-        Icon(
-          icon,
-          size: 35,
-          color: blueLight,
-        ),
-        Text(
-          title,
-          style: GoogleFonts.poppins(
-              color: blueLight, fontWeight: FontWeight.bold, fontSize: 15),
-        ),
-      ],
+  _buildIconTitle(String title, IconData icon, Function function) {
+    return InkWell(
+      onTap: () {
+        function();
+      },
+      child: Column(
+        children: [
+          Icon(
+            icon,
+            size: 35,
+            color: blueLight,
+          ),
+          Text(
+            title,
+            style: GoogleFonts.poppins(
+                color: blueLight, fontWeight: FontWeight.bold, fontSize: 15),
+          ),
+        ],
+      ),
     );
   }
 }

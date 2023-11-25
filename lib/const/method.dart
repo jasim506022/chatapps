@@ -1,10 +1,15 @@
+import 'package:chat_ju/model/userpersonmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../const/globalcolor.dart';
+import 'approutes.dart';
+import 'callcontroller.dart';
+import 'const.dart';
+import 'globalcolor.dart';
+import '../service/firebaseservice.dart';
 
-class Dialogs {
+class Methods {
   //for getting formatted time from miliSecondSinceEpochs String
   static String getTimeFormatted(BuildContext context, String time) {
     final date = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
@@ -28,6 +33,7 @@ class Dialogs {
         : '$formattedTime - ${sent.day} ${_getMonth(sent)} ${sent.year}';
   }
 
+// Get Month
   static String _getMonth(DateTime date) {
     switch (date.month) {
       case 1:
@@ -61,6 +67,7 @@ class Dialogs {
 // Display show to showSnachBar
   static void showSnackBar(BuildContext context, String msg) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      duration: Duration(seconds: 1),
       content: Text(
         msg,
         style:
@@ -112,9 +119,9 @@ class Dialogs {
     Fluttertoast.showToast(
         msg: msg,
         toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
+        gravity: ToastGravity.BOTTOM,
         backgroundColor: textColor,
-        textColor: Colors.white,
+        textColor: white,
         fontSize: 16.0);
   }
 
@@ -169,5 +176,19 @@ class Dialogs {
         );
       },
     );
+  }
+
+// Cala
+  static call(
+      {required BuildContext context,
+      required UserPersonModel user,
+      required bool isAudio}) {
+    CallController.callId = "1020";
+    CallController.userId = FirebaseService.user.uid;
+    isAudio ? CallController.audio = true : CallController.audio = false;
+    CallController.username = prefs!.getString("name") ?? "Jasim";
+    Navigator.of(context).pushNamed(AppRoutes.callViewPage);
+    FirebaseService.sendCallNotification(
+        isAudio ? "Audio Call" : "Video Call", user);
   }
 }

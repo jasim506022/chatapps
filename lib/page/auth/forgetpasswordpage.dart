@@ -11,8 +11,8 @@ import 'package:provider/provider.dart';
 
 import '../../const/globalcolor.dart';
 import '../../const/const.dart';
-import '../../helper/dialog.dart';
-import '../../service/loadingprovider.dart';
+import '../../const/method.dart';
+import '../../service/provider/loadingprovider.dart';
 import '../../widget/textformwidget.dart';
 
 class ForgetPasswordPage extends StatefulWidget {
@@ -45,7 +45,8 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
               color: blueLight,
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 18, top: 15),
+              padding: EdgeInsets.only(
+                  left: mq.width * 0.04, top: mq.height * 0.018),
               child: Text(
                 "Forget Password",
                 style: GoogleFonts.poppins(
@@ -63,15 +64,15 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                         topLeft: Radius.circular(40),
                         topRight: Radius.circular(40))),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding:  EdgeInsets.symmetric(horizontal: mq.width * 0.036,),
                   child: ListView(
                     children: [
                       Container(
                         height: mq.height * .35,
                         width: mq.width * 0.8,
                         margin: EdgeInsets.only(
-                            left: MediaQuery.of(context).size.width * 0.09,
-                            top: 30),
+                            left: mq.width * 0.09,
+                            top: mq.height * 0.035),
                         child: Image.asset("asset/image/loginpage.png"),
                       ),
                       SizedBox(
@@ -153,6 +154,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
         ),
         SizedBox(height: mq.height * .01),
         TextFormFieldWidget(
+            obscureText: false,
             emailController: controller,
             hintText: hintText,
             validate: validate),
@@ -167,7 +169,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        padding:  EdgeInsets.symmetric(horizontal: mq.width * 0.022, vertical: mq.height * 0.018),
       ),
       onPressed: () async {
         try {
@@ -177,12 +179,12 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
               email: _emailController.text.trim(),
             );
             Navigator.pushReplacementNamed(context, AppRoutes.signpage);
-            Dialogs.flutterToast(
+            Methods.flutterToast(
                 msg: "Password reset. Please Check Your Email");
           }
         } on SocketException {
           if (mounted) {
-            Dialogs.showDialogMethod(
+            Methods.showDialogMethod(
               context: context,
               message:
                   "No Internect Connection. Please your Interenet Connection",
@@ -191,7 +193,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
           }
         } catch (e) {
           if (mounted) {
-            Dialogs.showDialogMethod(
+            Methods.showDialogMethod(
               context: context,
               message: e.toString(),
               title: 'Error Occurred',

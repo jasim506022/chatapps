@@ -4,15 +4,17 @@ import 'package:google_fonts/google_fonts.dart';
 import '../const/globalcolor.dart';
 
 class TextFormFieldWidget extends StatelessWidget {
-  const TextFormFieldWidget({
-    super.key,
-    required this.hintText,
-    required this.emailController, required this.validate,
-  });
+  TextFormFieldWidget(
+      {super.key,
+      required this.hintText,
+      required this.emailController,
+      required this.validate,
+      required this.obscureText});
 
   final TextEditingController emailController;
   final String hintText;
   final String? Function(String?) validate;
+  final bool obscureText;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,7 @@ class TextFormFieldWidget extends StatelessWidget {
       controller: emailController,
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.emailAddress,
-      obscureText: false,
+      obscureText: obscureText,
       validator: validate,
       style: GoogleFonts.poppins(
           color: textColor, fontSize: 14, fontWeight: FontWeight.w500),

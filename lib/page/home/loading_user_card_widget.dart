@@ -12,8 +12,8 @@ class LoadingUserCardWidget extends StatelessWidget {
     Utils utils = Utils(context);
     mq = MediaQuery.of(context).size;
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
+      padding: EdgeInsets.symmetric(
+        horizontal: mq.width * .02,
       ),
       child: Card(
           color: white,

@@ -1,3 +1,7 @@
+import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 import 'package:chat_ju/const/approutes.dart';
 import 'package:chat_ju/service/searchprovider.dart';
 import 'package:flutter/foundation.dart';
@@ -33,6 +37,7 @@ class _HomePageState extends State<HomePage> {
     FirebaseService.getFirebaseMessagingToken();
     FirebaseService.getSelfInfor(context);
     FirebaseService.updateActiveStatus(true);
+    _requestPermission();
     SystemChannels.lifecycle.setMessageHandler((message) {
       if (kDebugMode) {
         print("message: $message");
@@ -51,6 +56,20 @@ class _HomePageState extends State<HomePage> {
       return Future.value(message);
     });
     super.initState();
+  }
+
+  _requestPermission() async {
+    bool statuses;
+    if (Platform.isAndroid) {
+      final deviceInfoPlugin = DeviceInfoPlugin();
+      final deviceInfo = await deviceInfoPlugin.androidInfo;
+      final sdkInt = deviceInfo.version.sdkInt;
+      statuses =
+          sdkInt < 29 ? await Permission.storage.request().isGranted : true;
+      // statuses = await Permission.storage.request().isGranted;
+    } else {
+      statuses = await Permission.photosAddOnly.request().isGranted;
+    }
   }
 
   @override
@@ -82,13 +101,15 @@ class _HomePageState extends State<HomePage> {
                 body: Column(
                   children: [
                     Container(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 10),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
+                      margin: EdgeInsets.symmetric(
+                          horizontal: mq.width * .033,
+                          vertical: mq.height * .012),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: mq.width * .022,
+                          vertical: mq.height * .006),
                       decoration: BoxDecoration(
                           color: white,
-                          borderRadius: BorderRadius.circular(15)),
+                          borderRadius: BorderRadius.circular(mq.width * .033)),
                       child: Row(
                         children: [
                           const Icon(
@@ -164,8 +185,9 @@ class _HomePageState extends State<HomePage> {
                           {
                             return Center(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 30, vertical: 10),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: mq.width * .066,
+                                    vertical: mq.height * .012),
                                 child: Image.asset("asset/image/nouser.png"),
                               ),
                             );
@@ -218,10 +240,11 @@ class _HomePageState extends State<HomePage> {
       automaticallyImplyLeading: false,
       backgroundColor: white,
       elevation: 0.0,
-      toolbarHeight: MediaQuery.of(context).size.height * 0.082,
+      toolbarHeight: mq.height * 0.082,
       flexibleSpace: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+          padding: EdgeInsets.symmetric(
+              horizontal: mq.width * .066, vertical: mq.height * .01),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -251,7 +274,7 @@ class _HomePageState extends State<HomePage> {
               ),
               const Spacer(),
               Container(
-                padding: const EdgeInsets.all(7),
+                padding: EdgeInsets.all(mq.height * .01),
                 decoration:
                     BoxDecoration(shape: BoxShape.circle, color: bgLight),
                 child: Icon(

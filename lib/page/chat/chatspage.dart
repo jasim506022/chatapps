@@ -10,13 +10,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../const/approutes.dart';
-import '../../const/callcontroller.dart';
 import '../../service/firebaseservice.dart';
 import '../../const/const.dart';
 import '../../const/globalcolor.dart';
-import '../../helper/dialog.dart';
+import '../../const/method.dart';
 import '../../model/messagemodel.dart';
-import '../../service/loadingprovider.dart';
+import '../../service/provider/loadingprovider.dart';
 
 import 'messagecard.dart';
 
@@ -151,8 +150,8 @@ class _ChatPageState extends State<ChatPage> {
           Navigator.pushNamed(context, AppRoutes.viewUserPage, arguments: user);
         },
         child: Padding(
-          padding:
-              const EdgeInsets.only(left: 10, top: 8, bottom: 8, right: 10),
+          padding: EdgeInsets.fromLTRB(mq.width * .023, mq.height * .01,
+              mq.height * .01, mq.width * .023),
           child: Row(
             children: [
               ClipRRect(
@@ -187,7 +186,7 @@ class _ChatPageState extends State<ChatPage> {
                   Text(
                       user.isOnline!
                           ? "Online"
-                          : Dialogs.getLastActiveTime(
+                          : Methods.getLastActiveTime(
                               context, user.lastActive!),
                       style: user.isOnline!
                           ? GoogleFonts.poppins(
@@ -205,14 +204,9 @@ class _ChatPageState extends State<ChatPage> {
                 children: [
                   IconButton(
                       onPressed: () {
-                        CallController.callId = "1020";
-                        CallController.userId = FirebaseService.user.uid;
-                        CallController.audio = true;
-                        CallController.username =
-                            prefs!.getString("name") ?? "Jasim";
-                        Navigator.of(context).pushNamed(AppRoutes.callViewPage);
-                        FirebaseService.sendCallNotification(
-                            "Audio Call", user);
+                        Methods.call(
+                            context: context, user: user, isAudio: true);
+                       
                       },
                       icon: Icon(
                         Icons.call,
@@ -220,16 +214,9 @@ class _ChatPageState extends State<ChatPage> {
                       )),
                   IconButton(
                       onPressed: () {
-                        CallController.callId = "1020";
-                        CallController.userId = FirebaseService.user.uid;
-                        CallController.username =
-                            prefs!.getString("name") ?? "Jasim";
-                        CallController.audio = false;
-                        Navigator.of(context).pushNamed(AppRoutes.callViewPage);
-                        FirebaseService.sendCallNotification(
-                          "Video Call",
-                          user,
-                        );
+                        Methods.call(
+                            context: context, user: user, isAudio: false);
+                       
                       },
                       icon: Icon(
                         Icons.video_call,
@@ -353,7 +340,7 @@ class _ChatPageState extends State<ChatPage> {
             minWidth: 0,
             padding: const EdgeInsets.all(7),
             shape: const CircleBorder(),
-            color: Colors.green,
+            color: green,
             child: Center(
               child: Icon(
                 Icons.send,

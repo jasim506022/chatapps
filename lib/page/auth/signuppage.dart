@@ -9,8 +9,8 @@ import 'package:provider/provider.dart';
 import '../../const/const.dart';
 import '../../service/firebaseservice.dart';
 import '../../const/globalcolor.dart';
-import '../../helper/dialog.dart';
-import '../../service/loadingprovider.dart';
+import '../../const/method.dart';
+import '../../service/provider/loadingprovider.dart';
 import '../../widget/textformwidget.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -48,7 +48,8 @@ class _SignUpPageState extends State<SignUpPage> {
               color: blueLight,
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 18, top: 15),
+              padding: EdgeInsets.only(
+                  left: mq.width * 0.04, top: mq.height * 0.018),
               child: Text(
                 "Sign Up",
                 style: GoogleFonts.poppins(
@@ -66,7 +67,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         topLeft: Radius.circular(40),
                         topRight: Radius.circular(40))),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.symmetric(horizontal: mq.width * 0.05),
                   child: ListView(
                     children: [
                       Container(
@@ -94,7 +95,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _buildTextFormField(
-                              label: '"Name"',
+                              label: "Name",
                               controller: _nameController,
                               hintText: 'name',
                               validate: (value) {
@@ -123,6 +124,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               height: mq.height * .015,
                             ),
                             _buildTextFormField(
+                                obscureText: true,
                                 controller: _passwordController,
                                 validate: (value) {
                                   if (value == null || value.isEmpty) {
@@ -136,6 +138,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               height: mq.height * .015,
                             ),
                             _buildTextFormField(
+                                obscureText: true,
                                 controller: _passwordRetypeController,
                                 validate: (value) {
                                   if (value == null || value.isEmpty) {
@@ -200,7 +203,8 @@ class _SignUpPageState extends State<SignUpPage> {
             backgroundColor: blueLight,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15)),
+            padding: EdgeInsets.symmetric(
+                horizontal: mq.width * 0.022, vertical: mq.height * 0.012)),
         onPressed: () async {
           if (_formKey.currentState!.validate()) {
             if (_passwordController.text.trim() ==
@@ -217,13 +221,13 @@ class _SignUpPageState extends State<SignUpPage> {
                   loadingProivder.setLoadingValue(loadingValue: false);
                 });
                 if (mounted) {
-                  Dialogs.showSnackBar(context, "Sign up  Succesffuly");
+                  Methods.showSnackBar(context, "Sign up  Succesffuly");
                   Navigator.pushReplacementNamed(context, AppRoutes.signpage);
                 }
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'email-already-in-use') {
                   if (mounted) {
-                    Dialogs.showDialogMethod(
+                    Methods.showDialogMethod(
                         context: context,
                         message:
                             "Email Already In User. Please Use Another Email",
@@ -232,7 +236,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   loadingProivder.setLoadingValue(loadingValue: false);
                 } else if (e.code == 'invalid-email') {
                   if (mounted) {
-                    Dialogs.showDialogMethod(
+                    Methods.showDialogMethod(
                         context: context,
                         message:
                             "Invalid Email address. Please put Valid Email Address",
@@ -241,7 +245,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   loadingProivder.setLoadingValue(loadingValue: false);
                 } else if (e.code == 'weak-password') {
                   if (mounted) {
-                    Dialogs.showDialogMethod(
+                    Methods.showDialogMethod(
                         context: context,
                         message: "Invalid Password. Please Put Valied Password",
                         title: 'Password Invalied');
@@ -249,7 +253,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   loadingProivder.setLoadingValue(loadingValue: false);
                 } else if (e.code == 'too-many-requests') {
                   if (mounted) {
-                    Dialogs.showDialogMethod(
+                    Methods.showDialogMethod(
                         context: context,
                         message: "To many requests",
                         title: 'To Many Request');
@@ -257,7 +261,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   loadingProivder.setLoadingValue(loadingValue: false);
                 } else if (e.code == 'operation-not-allowed') {
                   if (mounted) {
-                    Dialogs.showDialogMethod(
+                    Methods.showDialogMethod(
                         context: context,
                         message: "Operation Not Allowed",
                         title: 'Operator Not Allowed');
@@ -265,7 +269,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   loadingProivder.setLoadingValue(loadingValue: false);
                 } else if (e.code == 'user-disabled') {
                   if (mounted) {
-                    Dialogs.showDialogMethod(
+                    Methods.showDialogMethod(
                         context: context,
                         message: "User Disable",
                         title: 'User Disable');
@@ -273,7 +277,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   loadingProivder.setLoadingValue(loadingValue: false);
                 } else if (e.code == 'user-not-found') {
                   if (mounted) {
-                    Dialogs.showDialogMethod(
+                    Methods.showDialogMethod(
                         context: context,
                         message: "User Not Found",
                         title: 'User ot Found');
@@ -281,7 +285,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   loadingProivder.setLoadingValue(loadingValue: false);
                 } else {
                   if (mounted) {
-                    Dialogs.showDialogMethod(
+                    Methods.showDialogMethod(
                         context: context,
                         message: "Error Occured",
                         title: 'Please chack your internet or Othes');
@@ -291,7 +295,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 }
               } catch (e) {
                 if (mounted) {
-                  Dialogs.showDialogMethod(
+                  Methods.showDialogMethod(
                       context: context,
                       message: e.toString(),
                       title: 'Error Occured');
@@ -299,7 +303,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 loadingProivder.setLoadingValue(loadingValue: false);
               }
             } else {
-              Dialogs.flutterToast(
+              Methods.flutterToast(
                   msg: "Password and Retype Password Doesn't Same");
               loadingProivder.setLoadingValue(loadingValue: false);
             }
@@ -325,7 +329,8 @@ class _SignUpPageState extends State<SignUpPage> {
       {required String label,
       required TextEditingController controller,
       required String hintText,
-      required String? Function(String?) validate}) {
+      required String? Function(String?) validate,
+      bool obscureText = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -341,6 +346,7 @@ class _SignUpPageState extends State<SignUpPage> {
         TextFormFieldWidget(
             emailController: controller,
             hintText: hintText,
+            obscureText: obscureText,
             validate: validate),
       ],
     );
